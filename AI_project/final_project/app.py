@@ -312,7 +312,7 @@ if not st.session_state.get("user_type"):
             </div>
         </div>
         """, unsafe_allow_html=True)
-        if st.button("Enter Non-IT Workspace", use_container_width=True, key="ws_enter_nonit"):
+        if st.button("Enter Non-IT Workspace", type="primary",use_container_width=True, key="ws_enter_nonit"):
             from utils.app_store import set_user_workspace
             set_user_workspace(st.session_state.user_id, "NON_IT")
             st.session_state.user_type = "NON_IT"
