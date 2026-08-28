@@ -363,7 +363,7 @@ st.markdown(
 with st.sidebar:
 
     st.markdown(
-        "## AI Enterprise Project Intelligence"
+        "## Development of AI-Driven Enterprise Project Intelligence and Risk Management Platform"
     )
 
     st.divider()
