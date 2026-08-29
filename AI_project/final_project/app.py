@@ -55,8 +55,9 @@ if "it_project_uploaded" not in st.session_state:
 if "non_it_project_uploaded" not in st.session_state:
     st.session_state.non_it_project_uploaded = False
 
+import os
 if "api_base" not in st.session_state:
-    st.session_state.api_base = "http://127.0.0.1:8000"
+    st.session_state.api_base = os.environ.get("API_BASE_URL", "http://127.0.0.1:8000")
 
 
 # ============================================================
