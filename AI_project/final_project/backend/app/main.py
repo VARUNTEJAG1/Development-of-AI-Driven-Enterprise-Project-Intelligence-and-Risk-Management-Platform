@@ -32,6 +32,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+from fastapi.responses import RedirectResponse
+
+@app.get("/", tags=["System"], include_in_schema=False)
+def root():
+    return RedirectResponse(url="/docs")
+
 @app.get("/health", tags=["System Health"])
 def health_check():
     return {
