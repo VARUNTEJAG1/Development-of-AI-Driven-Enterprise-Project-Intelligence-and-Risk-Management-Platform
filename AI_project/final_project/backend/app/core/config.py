@@ -31,12 +31,14 @@ class Settings(BaseSettings):
     @classmethod
     def parse_cors_origins(cls, v):
         if isinstance(v, str):
-            # Handle JSON array string: '["https://x.com","*"]'
             v = v.strip()
             if v.startswith("["):
-                return json.loads(v)
-            # Handle comma-separated or single wildcard: "*" or "http://a.com,http://b.com"
-            return [origin.strip() for origin in v.split(",") if origin.strip()]
+                try:
+                    return json.loads(v)
+                except json.JSONDecodeError:
+                    # Fallback if invalid JSON (like single quotes)
+                    v = v.strip("[]")
+            return [origin.strip().strip("'\"") for origin in v.split(",") if origin.strip()]
         return v
 
     class Config:
