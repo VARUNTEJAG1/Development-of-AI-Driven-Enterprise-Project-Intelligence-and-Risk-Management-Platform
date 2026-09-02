@@ -1,13 +1,65 @@
+databases:
+  - name: ai-project-db
+    databaseName: project_risk_db
+    user: project_risk_user
+    plan: free
+
 services:
+  # ─────────────────────────────────────────
+  # 1. FastAPI Backend
+  # ─────────────────────────────────────────
   - type: web
     name: ai-project-backend
-    env: python
-    buildCommand: "cd AI_project/final_project/backend && pip install -r requirements.txt"
-    startCommand: "cd AI_project/final_project/backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+    runtime: python
+    plan: free
+    rootDir: AI_project/final_project/backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: sh -c "PYTHONPATH=. python -m alembic upgrade head; PYTHONPATH=. python scripts/seed.py; PYTHONPATH=. uvicorn app.main:app --host 0.0.0.0 --port $PORT"
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.0
       - key: PYTHONPATH
         value: .
+      - key: ENVIRONMENT
+        value: production
       - key: DATABASE_URL
-        value: sqlite:///./project_risk.db # Note: SQLite will reset on Render restarts. Replace with a Postgres URL later.
+        fromDatabase:
+          name: ai-project-db
+          property: connectionString
+      - key: GOOGLE_API_KEY
+        sync: false
+      - key: QDRANT_URL
+        sync: false
+      - key: QDRANT_API_KEY
+        sync: false
+      - key: USE_CLOUD_AI
+        value: "true"
+      - key: CORS_ORIGINS
+        value: "*"
+
+  # ─────────────────────────────────────────
+  # 2. Streamlit Frontend
+  # ─────────────────────────────────────────
+  - type: web
+    name: ai-project-frontend
+    runtime: python
+    plan: free
+    rootDir: AI_project/final_project
+    buildCommand: pip install -r requirements.txt
+    startCommand: streamlit run app.py --server.port $PORT --server.address 0.0.0.0 --server.headless true --server.enableCORS false --server.enableXsrfProtection false
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: API_BASE_URL
+        fromService:
+          name: ai-project-backend
+          type: web
+          envVarKey: RENDER_EXTERNAL_URL
+      - key: GOOGLE_API_KEY
+        sync: false
+      - key: QDRANT_URL
+        sync: false
+      - key: QDRANT_API_KEY
+        sync: false
+      - key: USE_CLOUD_AI
+        value: "true"

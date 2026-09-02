@@ -1,11 +1,15 @@
 import requests
+import os
+
+_DEFAULT_BACKEND = os.environ.get("API_BASE_URL", "http://127.0.0.1:8000")
 
 
 def _url(base_url, path):
     return base_url.rstrip("/") + "/" + path.lstrip("/")
 
 
-def api_get(path, base_url="http://127.0.0.1:8000", timeout=20):
+def api_get(path, base_url=None, timeout=20):
+    base_url = base_url or _DEFAULT_BACKEND
     try:
         r = requests.get(_url(base_url, path), timeout=timeout)
         r.raise_for_status()
@@ -16,7 +20,8 @@ def api_get(path, base_url="http://127.0.0.1:8000", timeout=20):
         return {"_error": f"Invalid JSON response: {e}"}
 
 
-def api_post(path, base_url="http://127.0.0.1:8000", payload=None, timeout=45, token=None):
+def api_post(path, base_url=None, payload=None, timeout=45, token=None):
+    base_url = base_url or _DEFAULT_BACKEND
     try:
         headers = {}
         if token:
@@ -37,7 +42,8 @@ def api_post(path, base_url="http://127.0.0.1:8000", payload=None, timeout=45, t
         return {"_error": f"Invalid JSON response: {e}"}
 
 
-def backend_health(base_url="http://127.0.0.1:8000"):
+def backend_health(base_url=None):
+    base_url = base_url or _DEFAULT_BACKEND
     try:
         r = requests.get(_url(base_url, "/health"), timeout=0.3)
         return r.ok

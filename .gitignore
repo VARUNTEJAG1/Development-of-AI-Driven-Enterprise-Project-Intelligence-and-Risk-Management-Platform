@@ -51,24 +51,24 @@ secrets.json
 # ============================================================
 # Data & Model Files (large files)
 # ============================================================
-*.csv
-*.xlsx
-*.xls
-*.parquet
-*.h5
-*.hdf5
+# Allow trained ML models to be committed (needed for Render deployment)
+!AI_project/final_project/ml_models/**
+!AI_project/final_project/backend/ml_models/**
 *.pkl
 *.pickle
-*.joblib
-*.model
+# Allow joblib models in ml_models dirs
+!AI_project/final_project/ml_models/*.joblib
+!AI_project/final_project/backend/ml_models/*.joblib
+*.h5
+*.hdf5
 *.bin
 *.pt
 *.pth
 *.onnx
 *.safetensors
-ml_models/*.pkl
-ml_models/*.joblib
-ml_models/*.model
+# Large root-level data dumps
+/project_risk_dataset.csv
+/final_dataset.xlsx
 data/raw/
 data/processed/
 
