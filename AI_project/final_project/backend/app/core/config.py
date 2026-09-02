@@ -1,6 +1,6 @@
 from pydantic_settings import BaseSettings
 from pydantic import field_validator
-from typing import List
+from typing import List, Union
 import os
 import json
 
@@ -18,7 +18,7 @@ class Settings(BaseSettings):
     METADATA_PATH: str = "ml_models/model_metadata.json"
     
     # CORS
-    CORS_ORIGINS: List[str] = [
+    CORS_ORIGINS: Union[str, List[str]] = [
         "http://localhost:3000",
         "http://127.0.0.1:3000",
         "http://localhost:5173",
